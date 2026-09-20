@@ -224,15 +224,12 @@ export default function CityWeatherPage() {
         celestialType={isDay ? 'sun' : 'moon'}
       />
 
-      {/* CTO DOKUNUŞU: DİNAMİK GRADYAN OVERLAY */}
-      {/* Hava bulutlu/beyaz ise, üst kısma hafif siyah bir gölge atarak beyaz metinleri kurtarıyoruz */}
       {isBrightCondition && (
         <div className="absolute inset-x-0 top-0 h-[60vh] bg-gradient-to-b from-black/70 via-black/30 to-transparent z-0 transition-opacity duration-1000"></div>
       )}
 
-      <div className="w-full max-w-7xl px-4 md:px-8 py-8 flex-grow z-10">
+      <div className="w-full max-w-7xl px-4 md:px-8 pt-28 pb-8 flex-grow z-10">
         
-        {/* BU KISIM ARTIK KORUMA ALTINDA (GÖLGE VAR) */}
         <div className="text-center mb-12 animate-fade-in mt-4 flex flex-col items-center">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 drop-shadow-xl flex items-center gap-3">
             {current.name} <span className="text-3xl">{getCountryFlag(current.sys.country)}</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { globalCities, CityData } from '@/lib/cities';
 
@@ -17,6 +17,17 @@ export default function Navbar() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+
+  useEffect(() => {
+    if (isGuideOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isGuideOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -78,7 +89,7 @@ export default function Navbar() {
         .anim-slide-down { animation: slide-down 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: top; }
       `}</style>
 
-      <nav className="w-full bg-black/30 backdrop-blur-xl border-b border-white/10 sticky top-0 z-[90] text-white">
+      <nav className="w-full fixed top-0 left-0 right-0 z-[100] text-white bg-black/10 backdrop-blur-md border-b border-white/5 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-4 relative">
           
           <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity w-full sm:w-auto" onClick={() => router.push('/')}>
