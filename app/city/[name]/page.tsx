@@ -280,26 +280,39 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000 flex flex-col items-center justify-between`}>
-            <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider w-full border-b border-white/10 pb-2">
+          {/* Sun/Moon Orbit - CTO DOKUNUŞU: Tam ortalandı ve iç saat eklendi */}
+          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000 flex flex-col`}>
+            <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider w-full border-b border-white/10 pb-2 flex-shrink-0">
               {isDay ? "Güneş Yörüngesi" : "Gece Döngüsü"}
             </h3>
-            <div className="relative w-full h-32 flex justify-center items-end mt-4">
-              <svg viewBox="0 0 200 100" className="w-full max-w-[280px] overflow-visible">
-                <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4 4" />
-                <path d={`M 20 90 A 80 80 0 0 1 ${orbitX} ${orbitY}`} fill="none" stroke={isDay ? "rgba(250,204,21,0.6)" : "rgba(226,232,240,0.6)"} strokeWidth="3" />
-                <circle cx={orbitX} cy={orbitY} r="7" fill={isDay ? "#facc15" : "#e2e8f0"} className="animate-pulse shadow-lg" />
-              </svg>
-              <div className="absolute w-full max-w-[320px] flex justify-between bottom-[-25px] text-sm font-medium text-white/70">
-                <span className="flex flex-col items-center">
-                  {isDay ? "🌅" : "🌇"} 
-                  <span>{isDay ? formatTime(current.sys.sunrise) : formatTime(current.sys.sunset)}</span>
-                </span>
-                <span className="flex flex-col items-center">
-                  {isDay ? "🌇" : "🌅"} 
-                  <span>{isDay ? formatTime(current.sys.sunset) : formatTime(current.sys.sunrise)}</span>
-                </span>
+            
+
+            <div className="flex-grow relative w-full flex justify-center items-center mt-6 mb-4">
+              
+              <div className="relative w-full max-w-[280px] aspect-[2/1]">
+                <svg viewBox="0 0 200 100" className="w-full absolute inset-0 overflow-visible">
+                  <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeDasharray="4 4" />
+                  <path d={`M 20 90 A 80 80 0 0 1 ${orbitX} ${orbitY}`} fill="none" stroke={isDay ? "rgba(250,204,21,0.6)" : "rgba(226,232,240,0.6)"} strokeWidth="3" />
+                  <circle cx={orbitX} cy={orbitY} r="7" fill={isDay ? "#facc15" : "#e2e8f0"} className="animate-pulse shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+                </svg>
+                
+                <div className="absolute inset-0 flex flex-col items-center justify-center pt-8 pointer-events-none text-shadow-premium">
+                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold mb-0.5">Şu An</span>
+                  <span className="text-2xl font-bold tracking-widest text-white">{liveLocalTime}</span>
+                </div>
+
+                <div className="absolute w-[115%] left-[-7.5%] flex justify-between bottom-[-20px] text-sm font-medium text-white/70 text-shadow-premium">
+                  <span className="flex flex-col items-center">
+                    {isDay ? "🌅" : "🌇"} 
+                    <span>{isDay ? formatTime(current.sys.sunrise) : formatTime(current.sys.sunset)}</span>
+                  </span>
+                  <span className="flex flex-col items-center">
+                    {isDay ? "🌇" : "🌅"} 
+                    <span>{isDay ? formatTime(current.sys.sunset) : formatTime(current.sys.sunrise)}</span>
+                  </span>
+                </div>
               </div>
+
             </div>
           </div>
 
