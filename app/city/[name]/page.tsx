@@ -56,6 +56,7 @@ const getAtmosphericIntel = (current: any, aqi: number) => {
   const humidity = current.main.humidity;
   const isNight = current.dt > current.sys.sunset || current.dt < current.sys.sunrise;
 
+  // CTO DOKUNUŞU: BEREKAT'IN TALEP ETTİĞİ SPESİFİK METİNLER ENTEGRE EDİLDİ
   if (['Rain', 'Drizzle', 'Thunderstorm', 'Snow'].includes(condition)) {
     return {
       title: "Derin Odaklanma İçin Harika",
@@ -178,16 +179,9 @@ export default function CityWeatherPage() {
   };
 
   const isDay = current.dt >= current.sys.sunrise && current.dt < current.sys.sunset;
-  
-  // Bulutlu/Karlı havalarda (beyaz BG) kartları biraz daha belirgin yapmak için
-  const condition = current.weather[0].main;
-  const isBrightCondition = ['Clouds', 'Snow', 'Mist', 'Fog', 'Haze'].includes(condition);
-
-  const glassBoxClass = isBrightCondition
-    ? 'bg-black/60 backdrop-blur-3xl border border-white/10 shadow-2xl transition-colors duration-1000'
-    : (isDay 
-        ? 'bg-black/30 backdrop-blur-2xl border border-white/10 shadow-2xl transition-colors duration-1000' 
-        : 'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl transition-colors duration-1000');
+  const glassBoxClass = isDay 
+    ? 'bg-black/30 backdrop-blur-2xl border border-white/10 shadow-2xl transition-colors duration-1000' 
+    : 'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl transition-colors duration-1000';
 
   const hourlyForecast = forecast.list.slice(0, 8);
   const dailyForecast = forecast.list.filter((item: any) => item.dt_txt.includes('12:00:00')).slice(0, 5);
@@ -224,33 +218,36 @@ export default function CityWeatherPage() {
         celestialType={isDay ? 'sun' : 'moon'}
       />
 
-      {isBrightCondition && (
-        <div className="absolute inset-x-0 top-0 h-[60vh] bg-gradient-to-b from-black/70 via-black/30 to-transparent z-0 transition-opacity duration-1000"></div>
-      )}
+      {/* CTO DOKUNUŞU: GRADYAN OVERLAY SİLİNDİ */}
 
+      {/* CTO DOKUNUŞU: Seamless Layout için pt-28 eklendi */}
       <div className="w-full max-w-7xl px-4 md:px-8 pt-28 pb-8 flex-grow z-10">
         
+        {/* CTO DOKUNUŞU: ANA METİNLERE text-shadow-premium VE drop-shadow EKLEDİ */}
         <div className="text-center mb-12 animate-fade-in mt-4 flex flex-col items-center">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 drop-shadow-xl flex items-center gap-3">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 text-shadow-premium drop-shadow-xl flex items-center gap-3">
             {current.name} <span className="text-3xl">{getCountryFlag(current.sys.country)}</span>
           </h2>
           
-          <div className="bg-white/10 backdrop-blur-md px-5 py-1.5 rounded-full border border-white/20 mb-4 flex items-center gap-2 shadow-lg">
+          {/* Saat Badge'ine de gölge eklendi */}
+          <div className="bg-white/10 backdrop-blur-md px-5 py-1.5 rounded-full border border-white/20 mb-4 flex items-center gap-2 shadow-lg text-shadow-premium">
             <span className="text-sm font-medium text-white/80">Yerel Saat:</span>
             <span className="text-lg font-bold tracking-widest text-blue-200">{liveLocalTime}</span>
           </div>
 
-          <div className="text-[7rem] md:text-[9rem] font-light tracking-tighter leading-none drop-shadow-2xl">
+          {/* Sıcaklığa dev gölge */}
+          <div className="text-[7rem] md:text-[9rem] font-light tracking-tighter leading-none text-shadow-premium drop-shadow-2xl">
             {Math.round(current.main.temp)}°
           </div>
 
           {tempDiffText && (
-            <div className="mt-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 flex items-center gap-2 animate-fade-in shadow-md">
+            <div className="mt-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 flex items-center gap-2 animate-fade-in text-shadow-premium shadow-md">
               <span className="text-sm font-medium text-white/80">📈 {tempDiffText}</span>
             </div>
           )}
 
-          <div className="flex justify-center items-center gap-3 mt-4">
+          {/* Hava Durumu Açıklamasına gölge */}
+          <div className="flex justify-center items-center gap-3 mt-4 text-shadow-premium">
              <AnimatedWeatherIcon condition={current.weather[0].main} className="w-10 h-10 md:w-12 md:h-12" />
              <p className="text-xl md:text-2xl font-medium drop-shadow-lg capitalize">
                {current.weather[0].description} {Math.round(current.main.temp_min)}° / {Math.round(current.main.temp_max)}°
@@ -261,7 +258,7 @@ export default function CityWeatherPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-10">
           
           {/* AQI */}
-          <div className={`lg:col-span-1 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col justify-between`}>
+          <div className={`lg:col-span-1 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col justify-between transition-colors duration-1000`}>
             <div className="mb-4">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${aqiInfo.color}`}>🍃 {aqiInfo.text}</h3>
               <p className="text-sm text-white/80 mt-1 leading-relaxed">{aqiInfo.desc}</p>
@@ -280,7 +277,7 @@ export default function CityWeatherPage() {
           </div>
 
           {/* Feels/Hum/Wind */}
-          <div className={`lg:col-span-1 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col justify-center gap-6`}>
+          <div className={`lg:col-span-1 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col justify-center gap-6 transition-colors duration-1000`}>
             <div className="flex flex-col border-b border-white/10 pb-3">
               <span className="text-white/60 text-sm uppercase tracking-wider mb-1">Hissedilen</span><span className="text-2xl font-semibold">{Math.round(current.main.feels_like)}°</span>
             </div>
@@ -292,19 +289,17 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* Sun/Moon Orbit - Güncellendi */}
-          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col items-center justify-between`}>
+          {/* Sun/Moon Orbit */}
+          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000 flex flex-col items-center justify-between`}>
             <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider w-full border-b border-white/10 pb-2">
               {isDay ? "Güneş Yörüngesi" : "Gece Döngüsü"}
             </h3>
-            
             <div className="relative w-full h-32 flex justify-center items-end mt-4">
               <svg viewBox="0 0 200 100" className="w-full max-w-[280px] overflow-visible">
                 <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4 4" />
                 <path d={`M 20 90 A 80 80 0 0 1 ${orbitX} ${orbitY}`} fill="none" stroke={isDay ? "rgba(250,204,21,0.6)" : "rgba(226,232,240,0.6)"} strokeWidth="3" />
                 <circle cx={orbitX} cy={orbitY} r="7" fill={isDay ? "#facc15" : "#e2e8f0"} className="animate-pulse shadow-lg" />
               </svg>
-              
               <div className="absolute w-full max-w-[320px] flex justify-between bottom-[-25px] text-sm font-medium text-white/70">
                 <span className="flex flex-col items-center">
                   {isDay ? "🌅" : "🌇"} 
@@ -316,16 +311,10 @@ export default function CityWeatherPage() {
                 </span>
               </div>
             </div>
-
-            {/* BEREKAT'IN TALEP ETTİĞİ SAAT ENTEGRASYONU */}
-            <div className="mt-7 bg-white/5 backdrop-blur-sm px-4 py-1 rounded-full border border-white/10 shadow-inner">
-               <span className="text-xs text-white/60 tracking-wider">Şu An: </span>
-               <span className="text-sm font-bold tracking-widest text-white">{liveLocalTime}</span>
-            </div>
           </div>
 
           {/* Hourly */}
-          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col`}>
+          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000 flex flex-col`}>
             <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider mb-4 border-b border-white/10 pb-2 flex-shrink-0">
               Bugün Saatlik
             </h3>
@@ -348,7 +337,7 @@ export default function CityWeatherPage() {
           </div>
 
           {/* Daily */}
-          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6`}>
+          <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000`}>
             <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider mb-4 border-b border-white/10 pb-2">Birkaç Günlük Tahmin</h3>
             <div className="flex flex-col gap-3">
               {dailyForecast.map((day: any, i: number) => {
@@ -367,8 +356,8 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* AI Intel */}
-          <div className={`lg:col-span-4 ${glassBoxClass} rounded-[2rem] p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 group`}>
+          {/* AI Intel GÜNCELLENDİ: BEREKAT'IN METİNLERİ ARTIK CANLI */}
+          <div className={`lg:col-span-4 ${glassBoxClass} rounded-[2rem] p-6 md:p-8 transition-colors duration-1000 flex flex-col md:flex-row items-center gap-6 group`}>
             <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
               <span className="text-5xl">{atmosphericIntel.icon}</span>
             </div>
@@ -377,7 +366,7 @@ export default function CityWeatherPage() {
                 {atmosphericIntel.title}
               </h3>
               <p className="text-white/80 leading-relaxed text-sm md:text-base max-w-4xl">
-                {atmosphericIntel.desc}             
+                {atmosphericIntel.desc}
               </p>
             </div>
           </div>
