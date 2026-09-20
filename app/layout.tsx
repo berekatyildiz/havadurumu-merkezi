@@ -18,8 +18,7 @@ export default function RootLayout({
     <html lang="tr" suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased" suppressHydrationWarning>
         <Navbar />
-        {/* Sayfa içerikleri bu main'in içine gelecek */}
-        <main className="flex-grow flex flex-col relative w-full pt-24 md:pt-28">
+        <main className="flex-grow flex flex-col relative w-full">
           {children}
         </main>
         <Footer />

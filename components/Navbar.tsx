@@ -20,7 +20,6 @@ export default function Navbar() {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   
-  // CTO DOKUNUŞU: DİNAMİK İZLANDA (MORPHING) STATE'LERİ
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +33,6 @@ export default function Navbar() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [isGuideOpen]);
 
-  // Arama aktifleşince input'a odaklan
   useEffect(() => {
     if (isSearchActive && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -61,8 +59,8 @@ export default function Navbar() {
     setShowSuggestions(false);
     setSearchInput('');
     setIsGuideOpen(false);
-    setIsExpanded(false); // Kapat
-    setIsSearchActive(false); // Arama modunu kapat
+    setIsExpanded(false); 
+    setIsSearchActive(false); 
     router.push(`/city/${encodeURIComponent(trimmed)}`);
   };
 
@@ -102,73 +100,65 @@ export default function Navbar() {
         @keyframes slide-down { 0% { opacity: 0; transform: translateY(-10px) scaleY(0.95); } 100% { opacity: 1; transform: translateY(0) scaleY(1); } }
         .anim-slide-down { animation: slide-down 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: top; }
         
-        /* DİNAMİK İZLANDA GEÇİŞ EFEKTLERİ */
-        .island-transition { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* DİNAMİK İZLANDA GEÇİŞ EFEKTLERİ - Daha keskin ve pürüzsüz */
+        .island-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
       `}</style>
 
-      {/* CTO DOKUNUŞU: YÜZEN DİNAMİK İZLANDA (PILL) KONTEYNERİ */}
       <nav className="fixed top-4 left-0 right-0 z-[100] flex justify-center px-4">
+        
         <div 
-          className={`island-transition bg-black/80 backdrop-blur-lg border border-white/20 rounded-full shadow-2xl flex items-center overflow-hidden h-14 ${isExpanded ? 'w-full max-w-[600px] px-2' : 'w-[250px] px-3'}`}
+          className={`island-transition bg-black/80 backdrop-blur-lg border border-white/20 rounded-full shadow-2xl flex items-center overflow-hidden h-14 ${isExpanded ? 'w-[600px] max-w-full px-2' : 'w-[280px] px-3'}`}
           onMouseEnter={() => setIsExpanded(true)}
           onMouseLeave={() => { if (!isSearchActive && !isGuideOpen) setIsExpanded(false); }}
           onClick={() => setIsExpanded(true)}
         >
           
-          {/* İZLANDA İÇERİĞİ: MORPHING DÜZEN */}
-          <div className="flex items-center justify-between w-full relative">
+          <div className="flex items-center justify-between w-full h-full relative">
 
-            {/* SOL KISIM: Logo veya Şehir Adı (Context Awareness) */}
-            <div className={`island-transition flex items-center gap-2 ${isExpanded ? 'opacity-100' : 'opacity-100'}`}>
+            {/* SOL KISIM */}
+            <div className={`island-transition flex items-center gap-2 whitespace-nowrap flex-shrink-0`}>
               <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => router.push('/')}>
                 <span className="text-2xl">🌤️</span> 
-                {/* Genişleyince tam adı göster, kapalıyken context ismini göster */}
-                {isExpanded ? (
-                  <span className="text-sm font-bold tracking-tight text-white/90">Merkez</span>
-                ) : (
-                  <span className="text-sm font-bold tracking-tight text-white/90">
-                    {decodedCity ? decodedCity.substring(0, 15) + (decodedCity.length > 15 ? '...' : '') : 'Hava Durumu'}
-                  </span>
-                )}
+                <span className="text-sm font-bold tracking-tight text-white/90">
+                  {isExpanded ? 'Merkez' : (decodedCity ? decodedCity.substring(0, 15) + (decodedCity.length > 15 ? '...' : '') : 'Hava Durumu')}
+                </span>
               </div>
             </div>
 
-            {/* ORTA KISIM: Arama/Kontroller (Genişleyince Belirir) */}
-            <div className={`island-transition flex-1 flex items-center justify-center gap-2 ${isExpanded ? 'opacity-100 scale-100 px-3' : 'opacity-0 scale-90 w-0'}`}>
+            {/* ORTA KISIM (Arama ve Kılavuz) */}
+            <div className={`island-transition absolute left-[110px] right-[50px] flex items-center justify-center gap-2 h-full ${isExpanded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
               
-              {/* Kılavuz Butonu */}
               <button 
-                onClick={() => { setIsGuideOpen(!isGuideOpen); setIsSearchActive(false); }}
-                className={`flex items-center gap-1.5 border px-3 py-1.5 rounded-full transition-all duration-300 text-xs font-medium whitespace-nowrap z-50 ${isGuideOpen ? 'bg-white/20 border-white/30 shadow-inner' : 'bg-white/5 hover:bg-white/10 border-white/10'}`}
+                onClick={(e) => { e.stopPropagation(); setIsGuideOpen(!isGuideOpen); setIsSearchActive(false); }}
+                className={`flex items-center gap-1.5 border px-3 py-1 rounded-full transition-all duration-300 text-xs font-medium whitespace-nowrap flex-shrink-0 ${isGuideOpen ? 'bg-white/20 border-white/30 shadow-inner' : 'bg-white/5 hover:bg-white/10 border-white/10'}`}
               >
                 <span className="text-base">📖</span> 
                 <span className="hidden min-[450px]:block">Kılavuz</span>
               </button>
 
-              {/* Arama Formu - Tıklayınca Genişlesin */}
-              <form onSubmit={handleFormSubmit} className={`island-transition flex items-center bg-black/50 rounded-full border border-white/20 ${isSearchActive ? 'flex-1 focus-within:border-blue-400 px-1 py-1' : 'w-10 h-10 border-none'}`}>
+              <form onSubmit={handleFormSubmit} className={`island-transition flex items-center bg-black/50 rounded-full border border-white/20 h-9 ${isSearchActive ? 'flex-1 focus-within:border-blue-400 px-1' : 'w-9 border-none justify-center'}`}>
                 {isSearchActive ? (
                   <>
-                    <input ref={searchInputRef} type="text" value={searchInput} onChange={handleInputChange} onFocus={() => { if (searchInput.trim().length >= 2) setShowSuggestions(true); }} placeholder="Şehir ara..." className="flex-1 w-full min-w-[80px] bg-transparent outline-none px-3 text-white placeholder-gray-400 text-xs" />
-                    <button type="submit" className="bg-blue-600/80 px-4 py-1.5 rounded-full hover:bg-blue-500 transition-colors font-medium text-xs text-white">Bul</button>
-                    <button type="button" onClick={() => { setIsSearchActive(false); setSearchInput(''); setShowSuggestions(false); }} className="text-white/50 hover:text-white px-2">✕</button>
+                    <input ref={searchInputRef} type="text" value={searchInput} onChange={handleInputChange} onFocus={() => { if (searchInput.trim().length >= 2) setShowSuggestions(true); }} placeholder="Şehir ara..." className="flex-1 w-full min-w-[50px] bg-transparent outline-none px-2 text-white placeholder-gray-400 text-xs" />
+                    <button type="submit" className="bg-blue-600/80 px-3 py-1 rounded-full hover:bg-blue-500 transition-colors font-medium text-xs text-white">Bul</button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); setIsSearchActive(false); setSearchInput(''); setShowSuggestions(false); }} className="text-white/50 hover:text-white px-2">✕</button>
                   </>
                 ) : (
-                  <button type="button" onClick={() => setIsSearchActive(true)} className="w-10 h-10 flex items-center justify-center text-lg hover:animate-pulse">🔍</button>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); setIsSearchActive(true); }} className="w-full h-full flex items-center justify-center text-sm hover:scale-110 transition-transform">🔍</button>
                 )}
               </form>
             </div>
 
-            {/* SAĞ KISIM: Konum Butonu */}
-            <div className={`island-transition ${isExpanded ? 'opacity-100' : 'opacity-100'}`}>
-              <button onClick={handleLocationClick} disabled={locationLoading} title="Konumumu Bul" className={`island-transition bg-black/50 border rounded-full transition-colors flex items-center justify-center flex-shrink-0 disabled:opacity-50 ${isExpanded ? 'border-white/20 w-10 h-10' : 'border-none w-8 h-8'}`}>
-                {locationLoading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span className="text-lg">📍</span>}
+            
+            <div className={`island-transition flex-shrink-0 z-10`}>
+              <button onClick={(e) => { e.stopPropagation(); handleLocationClick(); }} disabled={locationLoading} title="Konumumu Bul" className={`island-transition bg-black/50 border rounded-full transition-colors flex items-center justify-center disabled:opacity-50 ${isExpanded ? 'border-white/20 w-9 h-9' : 'border-none w-8 h-8'}`}>
+                {locationLoading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span className="text-sm">📍</span>}
               </button>
             </div>
 
-            {/* Arama Önerileri - Dinamik İzlanda'nın Altına Yapışık */}
+            {/* Arama Önerileri */}
             {showSuggestions && filteredSuggestions.length > 0 && isExpanded && isSearchActive && (
-              <ul className="absolute top-[120%] right-0 mt-2 w-full max-w-[250px] bg-slate-900/90 backdrop-blur-xl border border-slate-700 rounded-3xl shadow-2xl overflow-hidden z-[110] anim-slide-down">
+              <ul className="absolute top-[120%] right-0 mt-2 w-full max-w-[250px] bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-3xl shadow-2xl overflow-hidden z-[110] anim-slide-down">
                 {filteredSuggestions.map((cityObj, index) => (
                   <li key={index} onMouseDown={(e) => { e.preventDefault(); navigateToCity(cityObj.name); }} className="px-5 py-3.5 hover:bg-blue-600/50 cursor-pointer transition-colors border-b border-slate-800 last:border-0 text-xs flex justify-between items-center text-white/90">
                     <div><span className="font-bold text-blue-300">{cityObj.name.substring(0, searchInput.length)}</span><span>{cityObj.name.substring(searchInput.length)}</span></div>
@@ -181,7 +171,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Kılavuz Menüsü - Ekranın Ortasında Ayrı Bir Modal Olarak */}
+      
       {isGuideOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[120] flex items-center justify-center p-4 animate-fade-in" onClick={() => setIsGuideOpen(false)}>
           <div className="w-full sm:w-[32rem] bg-slate-900 border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col anim-slide-down text-white" onClick={(e) => e.stopPropagation()}>

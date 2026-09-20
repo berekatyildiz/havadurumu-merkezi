@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { getWeatherByCity } from '@/lib/weatherApi';
 import WeatherBackground from '@/components/WeatherBackground';
 
-// --- MİKRO-ANİMASYONLU İKON MOTORU ---
 const AnimatedWeatherIcon = ({ condition, className = "w-8 h-8" }: { condition: string, className?: string }) => {
   let iconContent;
   switch (condition) {
@@ -47,8 +46,6 @@ export default function Home() {
   const [error, setError] = useState('');
   
   const [hasLocalCity, setHasLocalCity] = useState(false);
-
-  
 
   useEffect(() => {
     let isMounted = true;
@@ -100,7 +97,6 @@ export default function Home() {
             if (data && data.length > 0) {
               setHasLocalCity(true);
               const filteredBase = baseCities.filter(c => c.toLocaleLowerCase('tr-TR') !== data[0].name.toLocaleLowerCase('tr-TR'));
-              // Slice değerini 6'dan 9'a çıkardık ki 9 kartımız olsun
               loadData([data[0].name, ...filteredBase].slice(0, 9)); 
             } else {
               setHasLocalCity(false);
@@ -125,7 +121,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="w-full max-w-7xl px-4 md:px-8 py-10 flex-grow flex flex-col justify-center animate-pulse mx-auto">
+      <div className="w-full max-w-7xl px-4 md:px-8 pt-24 pb-10 flex-grow flex flex-col justify-center animate-pulse mx-auto">
         <div className="h-10 w-64 bg-white/10 rounded-xl mb-6"></div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -137,7 +133,6 @@ export default function Home() {
     );
   }
 
-  
   if (error || defaultCities.length === 0) {
     return (
       <div className="flex-grow flex justify-center items-center">
@@ -163,8 +158,7 @@ export default function Home() {
         sunset={primaryCity.raw.sys.sunset} 
       />
 
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-10 flex-grow z-10 flex flex-col">
-        
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pt-24 pb-10 flex-grow z-10 flex flex-col">
         
         <div className="flex justify-between items-end mb-8 border-b border-white/20 pb-4">
           <div>
@@ -176,7 +170,6 @@ export default function Home() {
             </p>
           </div>
         </div>
-
         
         <div className={`grid grid-cols-1 md:grid-cols-2 ${hasLocalCity ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 w-full mb-16`}>
           
@@ -208,7 +201,6 @@ export default function Home() {
               );
             }
 
-            
             return (
               <article 
                 key={data.id} onClick={() => router.push(`/city/${encodeURIComponent(data.city)}`)} 
@@ -233,7 +225,6 @@ export default function Home() {
             );
           })}
         </div>
-
         
         <div className="mt-8 border-t border-white/20 pt-12">
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white drop-shadow-md mb-8">

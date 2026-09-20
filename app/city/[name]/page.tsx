@@ -56,7 +56,6 @@ const getAtmosphericIntel = (current: any, aqi: number) => {
   const humidity = current.main.humidity;
   const isNight = current.dt > current.sys.sunset || current.dt < current.sys.sunrise;
 
-  // CTO DOKUNUŞU: BEREKAT'IN TALEP ETTİĞİ SPESİFİK METİNLER ENTEGRE EDİLDİ
   if (['Rain', 'Drizzle', 'Thunderstorm', 'Snow'].includes(condition)) {
     return {
       title: "Derin Odaklanma İçin Harika",
@@ -218,24 +217,19 @@ export default function CityWeatherPage() {
         celestialType={isDay ? 'sun' : 'moon'}
       />
 
-      {/* CTO DOKUNUŞU: GRADYAN OVERLAY SİLİNDİ */}
-
-      {/* CTO DOKUNUŞU: Seamless Layout için pt-28 eklendi */}
-      <div className="w-full max-w-7xl px-4 md:px-8 pt-28 pb-8 flex-grow z-10">
+      {/* CTO DOKUNUŞU: pt-28 yerine pt-24 kullanıldı. Kutu milimetrik hizalandı. */}
+      <div className="w-full max-w-7xl px-4 md:px-8 pt-24 pb-8 flex-grow z-10 overflow-visible">
         
-        {/* CTO DOKUNUŞU: ANA METİNLERE text-shadow-premium VE drop-shadow EKLEDİ */}
         <div className="text-center mb-12 animate-fade-in mt-4 flex flex-col items-center">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 text-shadow-premium drop-shadow-xl flex items-center gap-3">
             {current.name} <span className="text-3xl">{getCountryFlag(current.sys.country)}</span>
           </h2>
           
-          {/* Saat Badge'ine de gölge eklendi */}
           <div className="bg-white/10 backdrop-blur-md px-5 py-1.5 rounded-full border border-white/20 mb-4 flex items-center gap-2 shadow-lg text-shadow-premium">
             <span className="text-sm font-medium text-white/80">Yerel Saat:</span>
             <span className="text-lg font-bold tracking-widest text-blue-200">{liveLocalTime}</span>
           </div>
 
-          {/* Sıcaklığa dev gölge */}
           <div className="text-[7rem] md:text-[9rem] font-light tracking-tighter leading-none text-shadow-premium drop-shadow-2xl">
             {Math.round(current.main.temp)}°
           </div>
@@ -246,7 +240,6 @@ export default function CityWeatherPage() {
             </div>
           )}
 
-          {/* Hava Durumu Açıklamasına gölge */}
           <div className="flex justify-center items-center gap-3 mt-4 text-shadow-premium">
              <AnimatedWeatherIcon condition={current.weather[0].main} className="w-10 h-10 md:w-12 md:h-12" />
              <p className="text-xl md:text-2xl font-medium drop-shadow-lg capitalize">
@@ -257,7 +250,6 @@ export default function CityWeatherPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-10">
           
-          {/* AQI */}
           <div className={`lg:col-span-1 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col justify-between transition-colors duration-1000`}>
             <div className="mb-4">
               <h3 className={`text-xl font-bold flex items-center gap-2 ${aqiInfo.color}`}>🍃 {aqiInfo.text}</h3>
@@ -276,7 +268,6 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* Feels/Hum/Wind */}
           <div className={`lg:col-span-1 ${glassBoxClass} rounded-[2rem] p-6 flex flex-col justify-center gap-6 transition-colors duration-1000`}>
             <div className="flex flex-col border-b border-white/10 pb-3">
               <span className="text-white/60 text-sm uppercase tracking-wider mb-1">Hissedilen</span><span className="text-2xl font-semibold">{Math.round(current.main.feels_like)}°</span>
@@ -289,7 +280,6 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* Sun/Moon Orbit */}
           <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000 flex flex-col items-center justify-between`}>
             <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider w-full border-b border-white/10 pb-2">
               {isDay ? "Güneş Yörüngesi" : "Gece Döngüsü"}
@@ -313,7 +303,6 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* Hourly */}
           <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000 flex flex-col`}>
             <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider mb-4 border-b border-white/10 pb-2 flex-shrink-0">
               Bugün Saatlik
@@ -336,7 +325,6 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* Daily */}
           <div className={`lg:col-span-2 ${glassBoxClass} rounded-[2rem] p-6 transition-colors duration-1000`}>
             <h3 className="text-sm font-medium text-white/60 uppercase tracking-wider mb-4 border-b border-white/10 pb-2">Birkaç Günlük Tahmin</h3>
             <div className="flex flex-col gap-3">
@@ -356,7 +344,6 @@ export default function CityWeatherPage() {
             </div>
           </div>
 
-          {/* AI Intel GÜNCELLENDİ: BEREKAT'IN METİNLERİ ARTIK CANLI */}
           <div className={`lg:col-span-4 ${glassBoxClass} rounded-[2rem] p-6 md:p-8 transition-colors duration-1000 flex flex-col md:flex-row items-center gap-6 group`}>
             <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
               <span className="text-5xl">{atmosphericIntel.icon}</span>
